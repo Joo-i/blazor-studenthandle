@@ -1,0 +1,67 @@
+﻿@page "/students"
+
+@namespace BlazorAppStandAlone.components
+
+<h3>Students</h3>
+
+<EditForm Model="@student" OnValidSubmit="HandleValidSubmit">
+
+    <DataAnnotationsValidator />
+
+    <div class="mb-3">
+        <label class="form-label">Name:</label>
+        <InputText class="form-control" @bind-Value="@student.Name" />
+        <ValidationMessage For="@(() => student.Name)" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Mobile:</label>
+        <InputText class="form-control" @bind-Value="@student.Mobile" />
+        <ValidationMessage For="@(() => student.Mobile)" />
+    </div>
+    
+    
+
+    <div class="mb-3">
+        <label class="form-label">Age:</label>
+        <InputNumber class="form-control" @bind-Value="@student.Age" />
+        <ValidationMessage For="@(() => student.Age)" />
+    </div>
+
+    <ValidationSummary/>
+
+
+    <button type="submit" class="btn btn-primary">Submit</button>
+</EditForm>
+
+<h1>registered students</h1>
+
+<div class="container mt-5">
+    
+    <input type="text" @bind="search" placeholder="Search by name..." class="form-control mb-3" />
+
+    <table class="table table-striped table-bordered">
+        <thead class="table-dark">
+            <tr>
+                <th scope="col">Name</th>
+                <th scope="col">Mobile</th>
+                <th scope="col">Age</th>
+                <th scope="col">Operations</th>
+            </tr>
+        </thead>
+    
+        <tbody>
+            @foreach (Student item in students.Where(s => string.IsNullOrEmpty(search) ||
+                        s.Name.Contains(search, StringComparison.OrdinalIgnoreCase)))
+            {
+                <tr>
+                    <td scope="col">@item.Name</td>
+                    <td scope="col">@item.Mobile</td>
+                    <td scope="col">@item.Age</td>
+                    <td scope="col"><a href="javascript:void(0)" onclick="@( ()=> @EditStudent(item) )">Edit</a></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
