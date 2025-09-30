@@ -1,12 +1,12 @@
 ﻿@page "/students"
 
 @namespace BlazorAppStandAlone.components
+@using Blazored.FluentValidation
 
 <h3>Students</h3>
 
 <EditForm Model="@student" OnValidSubmit="HandleValidSubmit">
-
-    <DataAnnotationsValidator />
+    <FluentValidationValidator />
 
     <div class="mb-3">
         <label class="form-label">Name:</label>
@@ -29,7 +29,6 @@
     </div>
 
     <ValidationSummary/>
-
 
     <button type="submit" class="btn btn-primary">Submit</button>
 </EditForm>
@@ -64,4 +63,5 @@
         </tbody>
     </table>
 </div>
+
 
