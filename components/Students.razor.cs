@@ -5,14 +5,13 @@ public partial class Students
     [Inject] private HttpClient? Http { get; set; } = default!;
 
     private Student? student = new();
-
     List<Student> ?students = [];
 
     private string? search = string.Empty;
+    
     protected async override Task OnAfterRenderAsync(bool firstRender)
     {
         await base.OnAfterRenderAsync(firstRender);
-
         //TODO:: using HttpClient call https://students.innopack.app/api/students to fill students
         
         if (firstRender && !students.Any())
@@ -34,9 +33,19 @@ public partial class Students
 
         if (validStudent is not null)
         {
-            if (validStudent.Id >= 0)
+            if (validStudent.Id > 0)
             {
-                var response = await Http.PutAsJsonAsync($"api/students", validStudent);///this doesnt work and using/{id} doesnt work as well but the student get replaced in the current table
+                var response = await Http.PutAsJsonAsync($"api/students{validStudent.Id}", validStudent);///this doesnt work bcs most of the ids are 0?
+                if (response.IsSuccessStatusCode)
+{ 
+                    var index = students.FindIndex(s => s.Id == validStudent.Id);
+                    if (index >=0)
+                    {
+                        students[index] = validStudent;
+                    }
+                    students = await Http.GetFromJsonAsync<List<Student>>("api/students");
+                    student = new Student();
+                }
             }
             else
             {
@@ -59,6 +68,7 @@ public partial class Students
         //Search With name if exits get it by index and edit it in list if not add it to list
         //TODO:: using HttpClient call https://students.innopack.app/api/students to post and put
         }
+         StateHasChanged();
     }
 
     
@@ -68,5 +78,6 @@ public partial class Students
 
         StateHasChanged();
     }
+
 
 }
